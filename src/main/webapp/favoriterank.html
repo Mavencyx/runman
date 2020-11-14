@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>收藏排行榜</title>
+        <link rel="stylesheet" type="text/css" href="css/common.css">
+        <link rel="stylesheet" type="text/css" href="css/ranking-list.css">
+        <script src="js/jquery-3.3.1.js"></script>
+        <script>
+
+            $(function () {
+                la(1);
+            });
+            function la(nowpage) {
+
+                $.post("max", {nowpage: nowpage}, function (pd) {
+
+
+                    var tollpag = pd.tollcount;
+                    var rs = "";
+                    var ac=(nowpage-1)*8+1;
+                    for (var i = 0; i < pd.list.length; i++) {
+                        var d = pd.list[i];
+                        rs += '<li><span class="num one">'+(ac+i)+'</span><a href="route_detail.html?rid='+d.rid+'"><img src="'+d.rimage+'" alt=""></a><h4><a href="route_detail.html'+d.rid+'">'+d.rname+'</a></h4><p><b class="price">&yen;<span>'+d.price+'</span>起</b><span class="shouchang">'+d.count+'</span></p></li>';
+                    }
+                    $("#row").html(rs)
+
+
+
+
+                    //判断分多少页码
+                    if (nowpage <= 1) {
+                        nowpage = 1;
+                    }
+                    if (nowpage >= pd.pages) {
+                        nowpage = pd.pages;
+                    }
+                    var nextpa = nowpage + 1;
+                    var formpa = nowpage - 1;
+
+                    var ls = '<li><a href="javascript:la(' + 1 + ');">首页</a></li>';
+                    ls += '<li class="threeword"><a href="javascript:la(' + formpa + ');">上一页</a></li>';
+
+                    var pages = pd.pages;
+                    var start = 0;
+                    var end = 10;
+                    if (pages < 10) {
+                        start = 1;
+                        end = pages;
+                    } else {
+                        if (nowpage <= 6) {
+                            start = 1;
+                            end = 10;
+                        }
+                        if (6 < nowpage && nowpage < pages - 4) {
+                            start = nowpage - 5;
+                            end = nowpage + 4;
+
+                        }
+                        if (pages <= nowpage + 4) {
+
+                            start = pages - 9;
+                            end = pages;
+                        }
+                    }
+                    for (var i = start; i <= end; i++) {
+
+                        if (i == nowpage) {
+                            ls += '<li class="curPage" onclick="javascript:la(' + i + ');"><a href="javascrip:#;">' + i + '</a></li>';
+
+                        } else {
+
+                            ls += '<li onclick="javascript:la(' + i + ');"><a href="javascrip:#;">' + i + '</a></li>';
+
+                        }
+                    }
+
+                    ls += '<li class="threeword"><a href="javascript:la(' + nextpa + ');">下一页</a></li>';
+                    ls += ' <li class="threeword"><a href="javascript:la(' + pages + ');">末页</a></li>';
+                    $("#pa").html(ls);
+                });
+            }
+
+
+
+        </script>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+        <div class="contant">
+            <div class="shaixuan">
+                <span>线路名称</span>
+                <input type="text">
+                <span>金额</span>
+                <input type="text">~<input type="text">
+                <button>搜索</button>
+            </div>
+            <div class="list clearfix">
+                <ul id="row">
+                    <li>
+                        <span class="num one">1</span>
+                        <a href="route_detail.html"><img src="images/jiangxuan_4.jpg" alt=""></a>
+                        <h4><a href="route_detail.html">【尾单特卖】全国-曼谷6-7天自由行 泰国出境旅游 特价往6-7天自由行 泰国出境旅游 特价往..</a></h4>
+                        <p>
+                            <b class="price">&yen;<span>899</span>起</b>
+                            <span class="shouchang">已收藏450次</span>
+                        </p>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="pageNum">
+                <ul id="pa">
+                    <li><a href="">首页</a></li>
+
+                </ul>
+            </div>
+        </div>
+    	
+         <!--导入底部-->
+   		 <div id="footer"></div>
+    <!--导入布局js，共享header和footer-->
+    <script type="text/javascript" src="js/include.js"></script>
+    </body>
+</html>
